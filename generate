@@ -98,8 +98,8 @@ read -p "Select? " metode;
 if [[ $metode -eq 1 ]]; then
 	echo -e "${Blue}"
 	read -p "CCNUMBER: " ccnumber;
-	read -p "MONTH(ex:05): " month;
-	read -p "YEAR(ex:20): " year;
+	read -p "MONTH (ex:05): " month;
+	read -p "YEAR (ex:20): " year;
 	read -p "CVV: " cvv;
 	sleep 1.5s
 	clear
