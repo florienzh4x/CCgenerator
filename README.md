@@ -44,5 +44,5 @@ chmod +x generate
 ```
 # FYI
 - Dua pilihan : 1.single 2.Mass
-- Menggunakan 1000 angka yang ada di file angak.txt
+- Menggunakan 1000 angka yang ada di file angka.txt
 - Very smooth and fast hhehehe
