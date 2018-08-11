@@ -1,0 +1,141 @@
+#!/bin/bash
+# Credit Card Multi Generator
+# Code By Monkey B Luffy | monkeybluffy@bc0de.net
+# Thanks to nako chan
+
+clear
+# COLOR PICKER
+B="\e[1m"
+Blue="\e[34m"
+LightRed="\e[91m"
+LightGreen="\e[92m"
+LightYellow="\e[93m"
+LightBlue="\e[94m"
+LightMagenta="\e[95m"
+LightCyan="\e[96m"
+
+echo -e "\e[1m"
+
+banner(){
+echo -e "\e[91m"
+cat << "EOF"
+            ######                           #####        
+            ######                           #####        
+            ######                           #####        
+            ##########                  ##########        
+                ######                  ######            
+                ######                  ######            
+                ######                  ######            
+            ######################################        
+            ######################################        
+            ######################################        
+        ##############################################    
+        ##########   ####################    #########    
+        ##########   ####################    #########    
+    ######################################################
+    ######################################################
+    ######################################################
+    ######################################################
+    #####   ######################################   #####
+    #####   ######################################   #####
+    #####   ######################################   #####
+    #####   ######                           #####   #####
+    #####   ######                           #####   #####
+    #####   ######                           #####   #####
+    #####   ##################   #################   #####
+                ##############   #############            
+                ##############   #############            
+                ##############   #############
+EOF
+echo -e "${LightCyan}"
+cat << "EOF"
+    ------------------------------------------------------
+      Credit Card Multi Generator
+      Code By Monkey B Luffy | monkeybluffy@bc0de.net
+      Thank's To Nako-chan
+    ------------------------------------------------------
+
+EOF
+}
+
+SingleGen(){
+		CC="$1"
+		BULAN="$2"
+		TAHUN="$3"
+		CVV="$4"
+		TakeCCNum=$(echo $CC | grep -Eo "([0-9]{13})")
+		IFS=$'\r\n' GLOBIGNORE='*' command eval 'angka=($(cat angka.txt))'
+		for (( i = 0; i < "${#angka[@]}"; i++ )); do
+			jembud="${angka[$i]}"
+			Combination="$TakeCCNum$jembud|$BULAN|20$TAHUN|$CVV"
+			printf "${LightYellow}[+] Generated => ${LightGreen}$TakeCCNum$jembud\n"
+			echo "$Combination" >> result.tmp
+		done
+}
+
+MassGen(){
+		objeknya="$1"
+		GetCC=$(echo "$objeknya" | grep -Eo "([0-9]{13})")
+		GetBulan=$(echo "$objeknya" | grep -Eo "([\|][0-9]{2}[\/])" | sed 's/|//g' | sed 's/\///g')
+		GetTahun=$(echo "$objeknya" | grep -Eo "([\/][0-9]{2}[\|])" | sed 's/|//g' | sed 's/\///g')
+		GetCvv=$(echo "$objeknya" | grep -Eo "([\|][0-9]{3,4})" | sed 's/|//g')
+		IFS=$'\r\n' GLOBIGNORE='*' command eval 'random=($(cat angka.txt))'
+		for (( i = 0; i < "${#random[@]}"; i++ )); do
+			GetRandom="${random[$i]}"
+			GetCombine="$GetCC$GetRandom|$GetBulan|20$GetTahun|$GetCvv"
+			printf "      ${LightYellow}Generated => ${LightGreen}$GetCC$GetRandom\n"
+			echo "$GetCombine" >> result.tmp
+		done
+}
+echo -e "\e[1m"
+banner
+echo -e "${LightYellow}"
+echo "Type Generator: "
+echo "1. Single"
+echo "2. Mass"
+read -p "Select? " metode;
+
+if [[ $metode -eq 1 ]]; then
+	echo -e "${Blue}"
+	read -p "CCNUMBER: " ccnumber;
+	read -p "MONTH(ex:05): " month;
+	read -p "YEAR(ex:20): " year;
+	read -p "CVV: " cvv;
+	sleep 1.5s
+	clear
+	banner
+	printf "${LightYellow}Starting Generate...\n\n"
+	sleep 3s
+		SingleGen $ccnumber $month $year $cvv
+	printf "\n${LightYellow}[!] Removing Duplicate... \n"
+	sort result.tmp | uniq -u >> Result.txt
+	printf "[!] Calculate...\n"
+	Jumlah=$(cat Result.txt | wc -l)
+	printf "\n[+] Total = $Jumlah\n"
+	rm -rf result.tmp
+	printf "\n[+] Generating Done\n[=] Check result in Result.txt file\n\n"
+elif [[ $metode -eq 2 ]]; then
+	printf "${LightCyan}List Files : ";ls
+	printf "${LightYellow}Select Your file: (nb: value in file CCNUMBER|MONTH|YEAR|CVV (ex: 1111111111111111|05/20|1111) )\n"
+	read -p "Choice? " files;
+	sleep 1.5s
+	clear
+	banner
+	printf "Starting Generate...\n\n"
+	sleep 3s
+	for cccc in $(cat $files); do
+		Contohnya=$(echo "$cccc" | grep -Eo "([0-9]{16})")
+		printf "${LightYellow}\n[!] Generating $Contohnya\n"
+			MassGen $cccc
+	done
+	printf "\n${LightYellow}[!] Removing Duplicate... \n"
+	sort result.tmp | uniq -u >> Result.txt
+	printf "[!] Calculate...\n"
+	Jumlah=$(cat Result.txt | wc -l)
+	printf "\n[+] Total = $Jumlah\n"
+	rm -rf result.tmp
+	printf "\n[+] Generating Done\n[=] Check result in Result.txt file\n\n"
+else
+	printf "\n\n${LightRed}Bad Option... Exit now!!\n\n"
+	exit 1
+fi
